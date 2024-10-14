@@ -1,0 +1,2 @@
+# ddd
+Mika DDD library
