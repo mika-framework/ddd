@@ -7,7 +7,7 @@ namespace Mika\Tests\Domain\Model;
 use Mika\Domain\Model\DomainEvent;
 use Mika\Domain\Model\DomainEventSubscriber;
 
-class TestDomainEventSubscriber implements DomainEventSubscriber
+class DomainEventSubscriberMock implements DomainEventSubscriber
 {
     private array $handledEvents = [];
 

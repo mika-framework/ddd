@@ -6,7 +6,7 @@ namespace Mika\Tests\Domain\Model;
 
 use Mika\Domain\Model\DomainEvent;
 
-class TestDomainEvent implements DomainEvent
+class DomainEventMock implements DomainEvent
 {
     private \DateTimeImmutable $occurredAt;
 

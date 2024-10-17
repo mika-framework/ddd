@@ -9,55 +9,55 @@ use Mika\Tests\Container;
 use PHPUnit\Framework\TestCase;
 
 // Domain events
-class TestDomainEventOne extends TestDomainEvent {}
-class TestDomainEventTwo extends TestDomainEvent {}
-class TestDomainEventThree extends TestDomainEvent {}
+class DomainEventOne extends DomainEventMock {}
+class DomainEventTwo extends DomainEventMock {}
+class DomainEventThree extends DomainEventMock {}
 
 // Domain event subscribers
-class TestDomainEventSubscriberOne extends TestDomainEventSubscriber {}
-class TestDomainEventSubscriberTwo extends TestDomainEventSubscriber {}
-class TestDomainEventSubscriberOneTwo extends TestDomainEventSubscriber {}
-class TestDomainEventSubscriberAll extends TestDomainEventSubscriber {}
+class DomainEventSubscriberOne extends DomainEventSubscriberMock {}
+class DomainEventSubscriberTwo extends DomainEventSubscriberMock {}
+class DomainEventSubscriberOneTwo extends DomainEventSubscriberMock {}
+class DomainEventSubscriberAll extends DomainEventSubscriberMock {}
 
 class DomainEventPublisherTest extends TestCase
 {
     protected Container $container;
 
-    protected TestDomainEventSubscriberOne $domainEventSubscriberOne;
-    protected TestDomainEventSubscriberTwo $domainEventSubscriberTwo;
-    protected TestDomainEventSubscriberOneTwo $domainEventSubscriberOneTwo;
-    protected TestDomainEventSubscriberAll $domainEventSubscriberAll;
+    protected DomainEventSubscriberOne $domainEventSubscriberOne;
+    protected DomainEventSubscriberTwo $domainEventSubscriberTwo;
+    protected DomainEventSubscriberOneTwo $domainEventSubscriberOneTwo;
+    protected DomainEventSubscriberAll $domainEventSubscriberAll;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->domainEventSubscriberOne = new TestDomainEventSubscriberOne();
-        $this->domainEventSubscriberTwo = new TestDomainEventSubscriberTwo();
-        $this->domainEventSubscriberOneTwo = new TestDomainEventSubscriberOneTwo();
-        $this->domainEventSubscriberAll = new TestDomainEventSubscriberAll();
+        $this->domainEventSubscriberOne = new DomainEventSubscriberOne();
+        $this->domainEventSubscriberTwo = new DomainEventSubscriberTwo();
+        $this->domainEventSubscriberOneTwo = new DomainEventSubscriberOneTwo();
+        $this->domainEventSubscriberAll = new DomainEventSubscriberAll();
 
         $this->container = new Container();
-        $this->container->services[TestDomainEventSubscriberOne::class] = $this->domainEventSubscriberOne;
-        $this->container->services[TestDomainEventSubscriberTwo::class] = $this->domainEventSubscriberTwo;
-        $this->container->services[TestDomainEventSubscriberOneTwo::class] = $this->domainEventSubscriberOneTwo;
-        $this->container->services[TestDomainEventSubscriberAll::class] = $this->domainEventSubscriberAll;
+        $this->container->services[DomainEventSubscriberOne::class] = $this->domainEventSubscriberOne;
+        $this->container->services[DomainEventSubscriberTwo::class] = $this->domainEventSubscriberTwo;
+        $this->container->services[DomainEventSubscriberOneTwo::class] = $this->domainEventSubscriberOneTwo;
+        $this->container->services[DomainEventSubscriberAll::class] = $this->domainEventSubscriberAll;
 
         $domainEventPublisher = DomainEventPublisher::instance();
 
-        $domainEventPublisher->subscribe(TestDomainEventSubscriberOne::class, TestDomainEventOne::class);
-        $domainEventPublisher->subscribe(TestDomainEventSubscriberTwo::class, TestDomainEventTwo::class);
-        $domainEventPublisher->subscribe(TestDomainEventSubscriberOneTwo::class, [TestDomainEventOne::class, TestDomainEventTwo::class]);
-        $domainEventPublisher->subscribe(TestDomainEventSubscriberAll::class, '*');
+        $domainEventPublisher->subscribe(DomainEventSubscriberOne::class, DomainEventOne::class);
+        $domainEventPublisher->subscribe(DomainEventSubscriberTwo::class, DomainEventTwo::class);
+        $domainEventPublisher->subscribe(DomainEventSubscriberOneTwo::class, [DomainEventOne::class, DomainEventTwo::class]);
+        $domainEventPublisher->subscribe(DomainEventSubscriberAll::class, '*');
     }
 
     public function testPublisherFailsWhenContainerNotSet(): void
     {
         $domainEventPublisher = DomainEventPublisher::instance();
 
-        $domainEventOne = new TestDomainEventOne();
+        $domainEventOne = new DomainEventOne();
 
-        $domainEventPublisher->subscribe(TestDomainEventSubscriberOne::class, TestDomainEventOne::class);
+        $domainEventPublisher->subscribe(DomainEventSubscriberOne::class, DomainEventOne::class);
 
         $this->expectException(\Exception::class);
         $domainEventPublisher->publish($domainEventOne, DomainEventPublisher::MODE_PROCESS);
@@ -68,24 +68,24 @@ class DomainEventPublisherTest extends TestCase
         $domainEventPublisher = DomainEventPublisher::instance();
         $domainEventPublisher->setContainer($this->container);
 
-        $domainEventPublisher->publish(new TestDomainEventOne(), DomainEventPublisher::MODE_PROCESS);
+        $domainEventPublisher->publish(new DomainEventOne(), DomainEventPublisher::MODE_PROCESS);
 
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
         $this->assertEquals([], $this->domainEventSubscriberTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOneTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberAll->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOneTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberAll->handledEvents());
 
-        $domainEventPublisher->publish(new TestDomainEventTwo(), DomainEventPublisher::MODE_PROCESS);
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class, TestDomainEventTwo::class], $this->domainEventSubscriberOneTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class, TestDomainEventTwo::class], $this->domainEventSubscriberAll->handledEvents());
+        $domainEventPublisher->publish(new DomainEventTwo(), DomainEventPublisher::MODE_PROCESS);
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class, DomainEventTwo::class], $this->domainEventSubscriberOneTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class, DomainEventTwo::class], $this->domainEventSubscriberAll->handledEvents());
 
-        $domainEventPublisher->publish(new TestDomainEventThree(), DomainEventPublisher::MODE_PROCESS);
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class, TestDomainEventTwo::class], $this->domainEventSubscriberOneTwo->handledEvents());
-        $this->assertEquals([TestDomainEventOne::class, TestDomainEventTwo::class, TestDomainEventThree::class], $this->domainEventSubscriberAll->handledEvents());
+        $domainEventPublisher->publish(new DomainEventThree(), DomainEventPublisher::MODE_PROCESS);
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class, DomainEventTwo::class], $this->domainEventSubscriberOneTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class, DomainEventTwo::class, DomainEventThree::class], $this->domainEventSubscriberAll->handledEvents());
     }
 
     public function testDelayedModeWaitsForProcessing(): void
@@ -93,11 +93,11 @@ class DomainEventPublisherTest extends TestCase
         $domainEventPublisher = DomainEventPublisher::instance();
         $domainEventPublisher->setContainer($this->container);
 
-        $domainEventPublisher->publish(new TestDomainEventOne());
+        $domainEventPublisher->publish(new DomainEventOne());
         $this->assertEquals([], $this->domainEventSubscriberOne->handledEvents());
 
         $domainEventPublisher->process();
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
     }
 
     public function testProcessModeOnlyProcessesOneEvent(): void
@@ -105,17 +105,17 @@ class DomainEventPublisherTest extends TestCase
         $domainEventPublisher = DomainEventPublisher::instance();
         $domainEventPublisher->setContainer($this->container);
 
-        $domainEventPublisher->publish(new TestDomainEventOne());
+        $domainEventPublisher->publish(new DomainEventOne());
         $this->assertEquals([], $this->domainEventSubscriberOne->handledEvents());
         $this->assertEquals([], $this->domainEventSubscriberTwo->handledEvents());
 
-        $domainEventPublisher->publish(new TestDomainEventTwo(), DomainEventPublisher::MODE_PROCESS);
+        $domainEventPublisher->publish(new DomainEventTwo(), DomainEventPublisher::MODE_PROCESS);
         $this->assertEquals([], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
 
         $domainEventPublisher->process();
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
     }
 
     public function testProcessAllModeProcessesAllEvents(): void
@@ -123,16 +123,16 @@ class DomainEventPublisherTest extends TestCase
         $domainEventPublisher = DomainEventPublisher::instance();
         $domainEventPublisher->setContainer($this->container);
 
-        $domainEventPublisher->publish(new TestDomainEventOne());
+        $domainEventPublisher->publish(new DomainEventOne());
         $this->assertEquals([], $this->domainEventSubscriberOne->handledEvents());
         $this->assertEquals([], $this->domainEventSubscriberTwo->handledEvents());
 
-        $domainEventPublisher->publish(new TestDomainEventTwo(), DomainEventPublisher::MODE_PROCESS_ALL);
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $domainEventPublisher->publish(new DomainEventTwo(), DomainEventPublisher::MODE_PROCESS_ALL);
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
 
         $domainEventPublisher->process();
-        $this->assertEquals([TestDomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
-        $this->assertEquals([TestDomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
+        $this->assertEquals([DomainEventOne::class], $this->domainEventSubscriberOne->handledEvents());
+        $this->assertEquals([DomainEventTwo::class], $this->domainEventSubscriberTwo->handledEvents());
     }
 }
