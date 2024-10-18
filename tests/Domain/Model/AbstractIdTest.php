@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Mika\Tests\Domain\Model;
 
-use Mika\Domain\Model\Identity;
+use Mika\Domain\Model\AbstractId;
 use PHPUnit\Framework\TestCase;
 
-class MyIdentityOne extends Identity
+class MyIdOne extends AbstractId
 {
     //
 }
 
-class MyIdentityTwo extends Identity
+class MyIdTwo extends AbstractId
 {
     protected function validateId(string $id): void
     {
@@ -20,11 +20,11 @@ class MyIdentityTwo extends Identity
     }
 }
 
-class IdentityTest extends TestCase
+class AbstractIdTest extends TestCase
 {
     public function testIdentityIsCreated(): void
     {
-        $identityOne = new MyIdentityOne('my_one');
+        $identityOne = new MyIdOne('my_one');
         $this->assertEquals('my_one', $identityOne->id());
     }
 
@@ -32,28 +32,28 @@ class IdentityTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Identifier cannot be empty');
-        new MyIdentityOne('');
+        new MyIdOne('');
     }
 
     public function testIdentityCustomValidation(): void
     {
-        $identityTwo = new MyIdentityTwo('my_two');
+        $identityTwo = new MyIdTwo('my_two');
         $this->assertEquals('my_two', $identityTwo->id());
 
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Identifier cannot be longer than 16 characters');
-        new MyIdentityTwo('my_01234567890123456789');
+        new MyIdTwo('my_01234567890123456789');
     }
 
     public function testIdentityEqualsOtherIdentity(): void
     {
-        $identityOne = new MyIdentityOne('my_identity');
+        $identityOne = new MyIdOne('my_identity');
 
-        $equalIdentityOne = new MyIdentityOne('my_identity');
+        $equalIdentityOne = new MyIdOne('my_identity');
 
-        $notEqualIdentityOne = new MyIdentityOne('other_identity');
-        $notEqualIdentityTwo1 = new MyIdentityTwo('my_identity');
-        $notEqualIdentityTwo2 = new MyIdentityTwo('other_identity');
+        $notEqualIdentityOne = new MyIdOne('other_identity');
+        $notEqualIdentityTwo1 = new MyIdTwo('my_identity');
+        $notEqualIdentityTwo2 = new MyIdTwo('other_identity');
 
         $this->assertTrue($identityOne->equals($equalIdentityOne));
 

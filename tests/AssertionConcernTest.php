@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Mika\Tests;
 
 use Mika\AssertionConcern;
-use Mika\Domain\Model\Identity;
+use Mika\Domain\Model\AbstractId;
 use PHPUnit\Framework\TestCase;
 
 class AssertionConcernObject
@@ -63,7 +63,7 @@ class AssertionConcernObject
     }
 }
 
-class IdentityObject extends Identity {}
+class IdObject extends AbstractId {}
 
 class AssertionConcernTest extends TestCase
 {
@@ -108,9 +108,9 @@ class AssertionConcernTest extends TestCase
 
     public function testEqualsAssertionWithObjects(): void
     {
-        $object = new IdentityObject('1');
-        $equalObject = new IdentityObject('1');
-        $notEqualObject = new IdentityObject('2');
+        $object = new IdObject('1');
+        $equalObject = new IdObject('1');
+        $notEqualObject = new IdObject('2');
 
         $this->object->invokeEquals($object, $equalObject);
 
@@ -132,9 +132,9 @@ class AssertionConcernTest extends TestCase
 
     public function testNotEqualsAssertionWithObjects(): void
     {
-        $object = new IdentityObject('1');
-        $equalObject = new IdentityObject('1');
-        $notEqualObject = new IdentityObject('2');
+        $object = new IdObject('1');
+        $equalObject = new IdObject('1');
+        $notEqualObject = new IdObject('2');
 
         $this->object->invokeNotEquals($object, $notEqualObject);
 
