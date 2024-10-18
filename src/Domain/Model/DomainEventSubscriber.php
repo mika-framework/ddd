@@ -6,5 +6,9 @@ namespace Mika\Domain\Model;
 
 interface DomainEventSubscriber
 {
-    public function handle(DomainEvent $domainEvent);
+    /**
+     * @param DomainEvent $domainEvent
+     * @return void
+     */
+    public function handle(DomainEvent $domainEvent): void;
 }

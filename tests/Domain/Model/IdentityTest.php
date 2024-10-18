@@ -16,7 +16,7 @@ class MyIdentityTwo extends Identity
 {
     protected function validateId(string $id): void
     {
-        $this->assertArgumentMaxLength($id, 16, 'Identifier cannot be longer than 16 characters');
+        $this->assertMaxLength($id, 16, 'Identifier cannot be longer than 16 characters');
     }
 }
 

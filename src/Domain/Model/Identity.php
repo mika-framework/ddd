@@ -29,7 +29,7 @@ abstract class Identity extends ValueObject
 
     protected function setId(string $id): void
     {
-        $this->assertArgumentNotEmpty($id, 'Identifier cannot be empty');
+        $this->assertNotEmpty($id, 'Identifier cannot be empty');
         $this->validateId($id);
 
         $this->id = $id;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Mika\Domain\Model;
 
-use Mika\Domain\Assertions;
+use Mika\AssertionConcern;
 
 abstract class DomainObject
 {
-    use Assertions;
+    use AssertionConcern;
 }
